@@ -51,6 +51,24 @@ function extractCards() {
     return "";
   }
 
+  function postUrl(card) {
+    const fiberKey = Object.keys(card).find((key) => key.startsWith("__reactFiber"));
+    if (!fiberKey) return "";
+    let fiber = card[fiberKey];
+    for (let step = 0; fiber && step < 30; step += 1) {
+      const detection = fiber.memoizedProps && fiber.memoizedProps.duplicateDetection;
+      const urn = detection && detection.dedupeId;
+      if (typeof urn === "string" && urn.length) {
+        if (/^urn:li:(?:ugcPost|activity|share|groupPost):\d+$/.test(urn)) {
+          return "https://www.linkedin.com/feed/update/" + urn + "/";
+        }
+        return "";
+      }
+      fiber = fiber.return;
+    }
+    return "";
+  }
+
   function profileUrl(card, author) {
     const link = [...card.querySelectorAll('a[href*="/in/"], a[href*="/company/"]')].find(
       (anchor) => clean(anchor.innerText).startsWith(author)
@@ -156,6 +174,7 @@ function extractCards() {
       comments: countFrom(paragraphs, "comments?") || hiddenCount(card, "comments?"),
       reposts: countFrom(paragraphs, "reposts?") || hiddenCount(card, "reposts?"),
       profileUrl: profileUrl(card, author),
+      postUrl: postUrl(card),
       links: externalLinks(card),
       suggested: paragraphs.some((item) => item === "Suggested"),
       hasVideo: Boolean(card.querySelector("video")),

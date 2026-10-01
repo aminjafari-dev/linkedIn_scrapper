@@ -189,6 +189,12 @@ button:disabled {
   font: 13px/1.4 ui-sans-serif, system-ui, sans-serif;
 }
 
+.post-link {
+  margin: 12px 0 0;
+  font: 13px/1.4 ui-sans-serif, system-ui, sans-serif;
+}
+
+.post-link a,
 .links a {
   color: var(--accent);
   word-break: break-all;

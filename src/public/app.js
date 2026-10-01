@@ -72,6 +72,19 @@ function renderPost(post) {
     article.append(text);
   }
 
+  const postUrl = safeHttp(post.postUrl);
+  if (postUrl) {
+    const postLink = document.createElement("p");
+    postLink.className = "post-link";
+    const link = document.createElement("a");
+    link.href = postUrl;
+    link.target = "_blank";
+    link.rel = "noreferrer";
+    link.textContent = postUrl;
+    postLink.append(link);
+    article.append(postLink);
+  }
+
   const meta = document.createElement("div");
   meta.className = "meta";
   if (post.suggested) meta.append(metaChip("Suggested"));
